@@ -1,6 +1,6 @@
 package com.sampwing.concurrencymodels.mutexmemory;
 
-public class Day1 {
+public class Counting {
 
     public static int Count(int count, boolean withSynchronized) {
         class Counter {
@@ -23,7 +23,7 @@ public class Day1 {
                 ++mCount;
             }
 
-            public int getCount() {
+            public synchronized int getCount() {
                 return mCount;
             }
         }

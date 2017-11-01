@@ -1,5 +1,8 @@
 package com.sampwing.concurrencymodels.mutexmemory;
 
+/**
+ * Created by wings on 11/1/17.
+ */
 public class Counting {
 
     public static int Count(int count, boolean withSynchronized) {

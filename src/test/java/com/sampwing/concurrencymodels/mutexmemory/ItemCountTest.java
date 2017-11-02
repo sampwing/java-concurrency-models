@@ -19,7 +19,7 @@ public class ItemCountTest {
     public void testWordCount() {
         String sentences = "this is a sentence. just like this one. and this one.";
 
-        Supplier<Iterable<String>> supplier = () -> (Arrays.asList(sentences.split(".")));
+        Supplier<Iterable<String>> supplier = () -> (Arrays.asList(sentences.split("\\.")));
         Function<String, Iterable<String>> tokenizer =
                 (sentence) -> (Arrays.asList(sentence.split("\\s")));
 

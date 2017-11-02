@@ -48,7 +48,7 @@ public class ItemCount<Group, Item> {
             mFunction = function;
         }
 
-        public Map<?, ?> getCounts() {
+        public Map<Item, Integer> getCounts() {
             return mCounts;
         }
 
@@ -64,11 +64,12 @@ public class ItemCount<Group, Item> {
         public void run() {
             try {
                while (true) {
-                   Group group = mQueue.take();
-                   if (group == null) {
+                   if (mQueue.peek() == null) {
                        // TODO should use a token here to indicate end of stream instead
                        break;
                    }
+
+                   Group group = mQueue.take();
 
                    Iterable<Item> items = mFunction.apply(group);
                    for (Item item: items) {
@@ -82,7 +83,7 @@ public class ItemCount<Group, Item> {
         }
     }
 
-    protected Map<?, ?> count(Supplier<Iterable<Group>> supplier, Function<Group, Iterable<Item>> function, int capacity) {
+    protected Map<Item, Integer> count(Supplier<Iterable<Group>> supplier, Function<Group, Iterable<Item>> function, int capacity) {
         ArrayBlockingQueue<Group> queue = new ArrayBlockingQueue<Group>(capacity);
         HashMap<Item, Integer> counts = new HashMap<>();
 
@@ -96,7 +97,7 @@ public class ItemCount<Group, Item> {
         parserThread.start();
         try {
             parserThread.join();
-            queue.put(null);
+            // queue.put(null);  // TODO fix this
             counterThread.join();
         } catch (InterruptedException ie) {
             ie.printStackTrace();

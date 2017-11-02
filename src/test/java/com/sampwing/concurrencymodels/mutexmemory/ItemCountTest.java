@@ -3,7 +3,9 @@ package com.sampwing.concurrencymodels.mutexmemory;
 import org.junit.Test;
 
 import java.util.Arrays;
+import java.util.Map;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
@@ -16,31 +18,19 @@ public class ItemCountTest {
     @Test
     public void testWordCount() {
         String sentences = "this is a sentence. just like this one. and this one.";
-        Function<String, Iterable<String>> stringSplitter = new Function<String, Iterable<String>>() {
-            @Override
-            public Iterable<String> apply(String s) {
-                return Arrays.asList(s.split("."));
-            }
-        };
-        Function<String, Iterable<String>> stringSplitter = new Function<String, Iterable<String>>() {
-            @Override
-            public Iterable<String> apply(String s) {
-                return Arrays.asList(s.split("."));
-            }
-        };
 
-        assertEquals(expectedCount, result);
+        Supplier<Iterable<String>> supplier = () -> (Arrays.asList(sentences.split(".")));
+        Function<String, Iterable<String>> tokenizer =
+                (sentence) -> (Arrays.asList(sentence.split("\\s")));
+
+        Map<String, Integer> counts = new ItemCount<String, String>().count(supplier, tokenizer, 100);
+
+        Integer expectedThisCount = 3;
+        Integer thisCount = counts.get("this");
+
+        assertEquals(expectedThisCount, thisCount);
+
     }
-
-    @Test
-    public void testCountUnsynchronized() {
-        int count = 100000;
-        int expectedCount = count * 2;
-        int result = Counting.Count(count, false);
-        // shouldn't be the same due to race condition
-        assertNotEquals(expectedCount, result);
-    }
-
 
 }
 

@@ -48,10 +48,6 @@ public class ItemCount<Group, Item> {
             mFunction = function;
         }
 
-        public Map<Item, Integer> getCounts() {
-            return mCounts;
-        }
-
         private void countItem(Item item) {
             Integer currentCount = mCounts.get(item);
             if (currentCount == null) {
@@ -66,6 +62,7 @@ public class ItemCount<Group, Item> {
                while (true) {
                    if (mQueue.peek() == null) {
                        // TODO should use a token here to indicate end of stream instead
+                       Thread.sleep(1000);
                        break;
                    }
 
@@ -90,19 +87,21 @@ public class ItemCount<Group, Item> {
         Counter counter = new Counter(queue, counts, function);
         Parser parser = new Parser(queue, supplier);
 
-        Thread counterThread = new Thread(counter);
-        Thread parserThread = new Thread(parser);
+//        Thread counterThread = new Thread(counter);
+//        Thread parserThread = new Thread(parser);
+//
+//        counterThread.start();
+//        parserThread.start();
+//        try {
+//            parserThread.join();
+//            // queue.put(null);  // TODO fix this
+//            counterThread.join();
+//        } catch (InterruptedException ie) {
+//            ie.printStackTrace();
+//        }
+        parser.run();
+        counter.run();
 
-        counterThread.start();
-        parserThread.start();
-        try {
-            parserThread.join();
-            // queue.put(null);  // TODO fix this
-            counterThread.join();
-        } catch (InterruptedException ie) {
-            ie.printStackTrace();
-        }
-
-        return counter.getCounts();
+        return counts;
     }
 }
